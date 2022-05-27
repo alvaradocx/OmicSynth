@@ -3,7 +3,7 @@ import streamlit as st
 
 @st.cache(show_spinner=False)
 def create_main():
-    path = '/Users/alvaradocx/Documents/omicsynth/diseases/Neuro/NDDs_SMR.csv'
+    path = 'NDDs_SMR.csv'
     df = pd.read_csv(path, sep = ',')
 
     # modifications

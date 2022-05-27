@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from multiapp import MultiApp
-from os_apps import gene_search, home, data, analysis, test, top_genes# import your app modules here
+from os_apps import gene_search, home, data, analysis, top_genes# import your app modules here
 
 
 app = MultiApp()

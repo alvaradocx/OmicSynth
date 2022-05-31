@@ -285,7 +285,7 @@ def app():
 
     main_df = st.session_state['main_data']
     # load in druggable genome list
-    drug_df = pd.read_csv('/Users/alvaradocx/Documents/omicsynth/druggable_genome.csv', sep = ',') 
+    drug_df = pd.read_csv('./druggable_genome.csv', sep = ',') 
     st.session_state['drugdf'] = drug_df
 
     st.title('Top Genes and Top SNPs')

@@ -104,7 +104,7 @@ def app():
     main_snp_list = list(main_df['topSNP'].unique())
     st.session_state['snps_list']  = main_snp_list
 
-    st.title('SNP Searchh')
+    st.title('SNP Search')
     st.write("Use this interactive tool to search for your SNP(s) of interest against our database.")
     
     with st.form("SNP_Search"):

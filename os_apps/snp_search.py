@@ -165,7 +165,7 @@ def app():
 
         if st.session_state['omic_count'] == 'Yes' and st.session_state['dx_count'] == 'Yes':
             # omic count
-            omic_count_df = pd.crosstab(st.session_state['snps_results_df'].Omic, st.session_state['snp_results_df'].topSNP)
+            omic_count_df = pd.crosstab(st.session_state['snp_results_df'].Omic, st.session_state['snp_results_df'].topSNP)
             st.session_state['omic_df'] = omic_count_df
             st.subheader('Omic count')
             st.dataframe(st.session_state['omic_df'])

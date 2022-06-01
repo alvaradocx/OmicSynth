@@ -150,7 +150,7 @@ def app():
         
         if len(not_snps) >= 2:
             st.write(f'{", ".join(not_snps)} are not recognized or are not in our dataset. Please check your list and try again.')
-        elif len(not_snpss) == 1:
+        elif len(not_snps) == 1:
             st.write(f'{not_snps[0]} is not recognized or is not in our dataset. Please check and try again.')
         else:
             snp_results_df = main_df[main_df['topSNP'].isin(st.session_state['snps'])]

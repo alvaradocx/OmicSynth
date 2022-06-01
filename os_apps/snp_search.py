@@ -63,7 +63,7 @@ def app():
     #st.markdown(hide_dataframe_row_index, unsafe_allow_html=True)
 
     # session state variables for  gene dataframe
-    if 'snp_list' not in st.session_state: # genes in dataase
+    if 'snps_list' not in st.session_state: # genes in dataase
         st.session_state['snp_list'] = None
     if 'gene_results_df' not in st.session_state:
         st.session_state['snp_results_df'] = None

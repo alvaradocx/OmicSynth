@@ -64,7 +64,7 @@ def app():
 
     # session state variables for  gene dataframe
     if 'snps_list' not in st.session_state: # genes in dataase
-        st.session_state['snp_list'] = None
+        st.session_state['snps_list'] = None
     if 'gene_results_df' not in st.session_state:
         st.session_state['snp_results_df'] = None
 
@@ -102,7 +102,7 @@ def app():
 
     main_df = st.session_state['main_data']
     main_snp_list = list(main_df['topSNP'].unique())
-    st.session_state['snp_list']  = main_snp_list
+    st.session_state['snps_list']  = main_snp_list
 
     st.title('SNP Searchh')
     st.write("Use this interactive tool to search for your SNP(s) of interest against our database.")

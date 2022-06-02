@@ -30,7 +30,7 @@ def create_df(df, diseases, omics):
     new_df = df.query("Disease in @diseases and Omic in @omics")
     return new_df
 
-def get_top_genes(df, diseases, omics_list = None, HLA = False, create_chart = False, heidi = 0.01, pval = 0.05):
+def get_top_genes(df, diseases, omics_list = None, HLA = False, create_chart = False, heidi = 0.01, pval = 0.05, peqtl = 0.05):
     # preset list of NDD omics
     ndd_omics = ['Cerebellum_metaBrain', 'Spinalcord_metaBrain', 'brain_eMeta', 'Cortex_metaBrain', 
             'Basalganglia_metaBrain', 'Brain_Substantia_nigra_GTEx', 'blood_eQTLgen', 'Hippocampus_metaBrain',
@@ -57,9 +57,9 @@ def get_top_genes(df, diseases, omics_list = None, HLA = False, create_chart = F
     if omics_list == 'all':
         for disease in diseases:
             for omic in all_omics:
-                temp_df = smr_df.query(f"Disease == '{disease}' & Omic == '{omic}' & p_SMR_multi < {pval} & p_HEIDI > {heidi}")
+                temp_df = smr_df.query(f"Disease == '{disease}' & Omic == '{omic}' & p_SMR_multi < {pval} & p_HEIDI > {heidi} & p_eQTL < {peqtl}")
                 top_gene = temp_df[temp_df['p_SMR_multi'] == temp_df['p_SMR_multi'].min()]
-                top_gene = top_gene[['Omic', 'Disease', 'annotated_gene', 'topSNP', 'b_GWAS','p_GWAS', 'b_SMR', 'p_SMR_multi', 'p_HEIDI']]
+                top_gene = top_gene[['Omic', 'Disease', 'annotated_gene', 'topSNP', 'b_GWAS','p_GWAS', 'b_SMR', 'p_SMR_multi', 'p_HEIDI', 'p_eQTL']]
                 
                 top_genes_df = pd.concat([top_genes_df,top_gene])
         
@@ -81,9 +81,9 @@ def get_top_genes(df, diseases, omics_list = None, HLA = False, create_chart = F
     elif omics_list != None: # Custom omics list
         for disease in diseases:
             for omic in omics_list:
-                temp_df = smr_df.query(f"Disease == '{disease}' & Omic == '{omic}' & p_SMR_multi < {pval} & p_HEIDI > {heidi}")
+                temp_df = smr_df.query(f"Disease == '{disease}' & Omic == '{omic}' & p_SMR_multi < {pval} & p_HEIDI > {heidi} & p_eQTL < {peqtl}")
                 top_gene = temp_df[temp_df['p_SMR_multi'] == temp_df['p_SMR_multi'].min()]
-                top_gene = top_gene[['Omic', 'Disease', 'annotated_gene', 'topSNP', 'b_GWAS','p_GWAS', 'b_SMR', 'p_SMR_multi', 'p_HEIDI']]
+                top_gene = top_gene[['Omic', 'Disease', 'annotated_gene', 'topSNP', 'b_GWAS','p_GWAS', 'b_SMR', 'p_SMR_multi', 'p_HEIDI', 'p_eQTL']]
                 
                 top_genes_df = pd.concat([top_genes_df,top_gene])
         
@@ -105,9 +105,9 @@ def get_top_genes(df, diseases, omics_list = None, HLA = False, create_chart = F
     else: # if using default ndd_omics list
         for disease in diseases:
             for omic in ndd_omics:
-                temp_df = smr_df.query(f"Disease == '{disease}' & Omic == '{omic}' & p_SMR_multi < {pval} & p_HEIDI > {heidi}")
+                temp_df = smr_df.query(f"Disease == '{disease}' & Omic == '{omic}' & p_SMR_multi < {pval} & p_HEIDI > {heidi} & p_eQTL < {peqtl}")
                 top_gene = temp_df[temp_df['p_SMR_multi'] == temp_df['p_SMR_multi'].min()]
-                top_gene = top_gene[['Omic', 'Disease', 'annotated_gene', 'topSNP', 'b_GWAS','p_GWAS', 'b_SMR', 'p_SMR_multi', 'p_HEIDI']]
+                top_gene = top_gene[['Omic', 'Disease', 'annotated_gene', 'topSNP', 'b_GWAS','p_GWAS', 'b_SMR', 'p_SMR_multi', 'p_HEIDI', 'p_eQTL']]
                 
                 top_genes_df = pd.concat([top_genes_df,top_gene])
 
@@ -153,7 +153,7 @@ def get_top_snps(df, diseases, omics_list = None, HLA = False, create_chart = Fa
     if omics_list == 'all':
         for disease in diseases:
             for omic in all_omics:
-                temp_df = smr_df.query(f"Disease == '{disease}' & Omic == '{omic}' & p_SMR_multi < {pval} & p_HEIDI > {heidi} & p_eQTL > {peqtl}")
+                temp_df = smr_df.query(f"Disease == '{disease}' & Omic == '{omic}' & p_SMR_multi < {pval} & p_HEIDI > {heidi} & p_eQTL < {peqtl}")
                 top_snp = temp_df[temp_df['p_SMR_multi'] == temp_df['p_SMR_multi'].min()]
                 top_snp = top_snp[['Omic', 'Disease', 'annotated_gene', 'topSNP', 'b_GWAS','p_GWAS', 'b_SMR', 'p_SMR_multi', 'p_HEIDI', 'p_eQTL']]
                 
@@ -174,7 +174,7 @@ def get_top_snps(df, diseases, omics_list = None, HLA = False, create_chart = Fa
     elif omics_list != None: # Custom omics list
         for disease in diseases:
             for omic in omics_list:
-                temp_df = smr_df.query(f"Disease == '{disease}' & Omic == '{omic}' & p_SMR_multi < {pval} & p_HEIDI > {heidi} & p_eQTL > {peqtl}")
+                temp_df = smr_df.query(f"Disease == '{disease}' & Omic == '{omic}' & p_SMR_multi < {pval} & p_HEIDI > {heidi} & p_eQTL < {peqtl}")
                 top_snp = temp_df[temp_df['p_SMR_multi'] == temp_df['p_SMR_multi'].min()]
                 top_snp = top_snp[['Omic', 'Disease', 'annotated_gene', 'topSNP', 'b_GWAS','p_GWAS', 'b_SMR', 'p_SMR_multi', 'p_HEIDI', 'p_eQTL']]
                 
@@ -195,7 +195,7 @@ def get_top_snps(df, diseases, omics_list = None, HLA = False, create_chart = Fa
     else: # if using default ndd_omics list
         for disease in diseases:
             for omic in ndd_omics:
-                temp_df = smr_df.query(f"Disease == '{disease}' & Omic == '{omic}' & p_SMR_multi < {pval} & p_HEIDI > {heidi} & p_eQTL > {peqtl}")
+                temp_df = smr_df.query(f"Disease == '{disease}' & Omic == '{omic}' & p_SMR_multi < {pval} & p_HEIDI > {heidi} & p_eQTL < {peqtl}")
                 top_snp = temp_df[temp_df['p_SMR_multi'] == temp_df['p_SMR_multi'].min()]
                 top_snp = top_snp[['Omic', 'Disease', 'annotated_gene', 'topSNP', 'b_GWAS','p_GWAS', 'b_SMR', 'p_SMR_multi', 'p_HEIDI', 'p_eQTL']]
                 

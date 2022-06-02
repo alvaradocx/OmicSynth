@@ -163,7 +163,8 @@ def app():
             gene_results_df = main_df[main_df['annotated_gene'].isin(st.session_state['genes'])]
             p_val = st.session_state['pval']
             heidi_val = st.session_state['heidi']
-            gene_results_df = gene_results_df.query(f'p_SMR_multi < {p_val} & p_HEIDI > {heidi_val} & p_eQTL > {peqtl}')
+            peqtl_val = st.session_state['peqtl']
+            gene_results_df = gene_results_df.query(f'p_SMR_multi < {p_val} & p_HEIDI > {heidi_val} & p_eQTL < {peqtl_val}')
             st.session_state['gene_results_df'] = gene_results_df
             st.subheader('Results dataframe')
             st.dataframe(st.session_state['gene_results_df'])

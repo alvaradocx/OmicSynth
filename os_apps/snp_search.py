@@ -129,6 +129,9 @@ def app():
         heidival = st.number_input('HEIDI p-value threshold', value = 0.01)
         st.session_state['heidi'] = heidival
 
+        peqtlval = st.number_input('p-eQTL threshold', value = 0.05)
+        st.session_state['peqtl'] = peqtlval
+
 
         # return count df
         count_omic = st.radio('Would you like to return a dataframe that shows how many times a SNP shows up in each omic?', ('Yes', 'No'))

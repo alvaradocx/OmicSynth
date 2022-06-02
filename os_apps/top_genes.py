@@ -126,7 +126,7 @@ def get_top_genes(df, diseases, omics_list = None, HLA = False, create_chart = F
             return top_genes_df
     
 
-def get_top_snps(df, diseases, omics_list = None, HLA = False, create_chart = False, heidi = 0.01, pval = 0.05):
+def get_top_snps(df, diseases, omics_list = None, HLA = False, create_chart = False, heidi = 0.01, pval = 0.05, peqtl = 0.05):
     # preset list of NDD omics
     ndd_omics = ['Cerebellum_metaBrain', 'Spinalcord_metaBrain', 'brain_eMeta', 'Cortex_metaBrain', 
             'Basalganglia_metaBrain', 'Brain_Substantia_nigra_GTEx', 'blood_eQTLgen', 'Hippocampus_metaBrain',
@@ -153,9 +153,9 @@ def get_top_snps(df, diseases, omics_list = None, HLA = False, create_chart = Fa
     if omics_list == 'all':
         for disease in diseases:
             for omic in all_omics:
-                temp_df = smr_df.query(f"Disease == '{disease}' & Omic == '{omic}' & p_SMR_multi < {pval} & p_HEIDI > {heidi}")
+                temp_df = smr_df.query(f"Disease == '{disease}' & Omic == '{omic}' & p_SMR_multi < {pval} & p_HEIDI > {heidi} & p_eQTL > {peqtl}")
                 top_snp = temp_df[temp_df['p_SMR_multi'] == temp_df['p_SMR_multi'].min()]
-                top_snp = top_snp[['Omic', 'Disease', 'annotated_gene', 'topSNP', 'b_GWAS','p_GWAS', 'b_SMR', 'p_SMR_multi', 'p_HEIDI']]
+                top_snp = top_snp[['Omic', 'Disease', 'annotated_gene', 'topSNP', 'b_GWAS','p_GWAS', 'b_SMR', 'p_SMR_multi', 'p_HEIDI', 'p_eQTL']]
                 
                 top_snps_df = pd.concat([top_snps_df,top_snp])
         
@@ -174,9 +174,9 @@ def get_top_snps(df, diseases, omics_list = None, HLA = False, create_chart = Fa
     elif omics_list != None: # Custom omics list
         for disease in diseases:
             for omic in omics_list:
-                temp_df = smr_df.query(f"Disease == '{disease}' & Omic == '{omic}' & p_SMR_multi < {pval} & p_HEIDI > {heidi}")
+                temp_df = smr_df.query(f"Disease == '{disease}' & Omic == '{omic}' & p_SMR_multi < {pval} & p_HEIDI > {heidi} & p_eQTL > {peqtl}")
                 top_snp = temp_df[temp_df['p_SMR_multi'] == temp_df['p_SMR_multi'].min()]
-                top_snp = top_snp[['Omic', 'Disease', 'annotated_gene', 'topSNP', 'b_GWAS','p_GWAS', 'b_SMR', 'p_SMR_multi', 'p_HEIDI']]
+                top_snp = top_snp[['Omic', 'Disease', 'annotated_gene', 'topSNP', 'b_GWAS','p_GWAS', 'b_SMR', 'p_SMR_multi', 'p_HEIDI', 'p_eQTL']]
                 
                 top_snps_df = pd.concat([top_snps_df,top_snp])
         
@@ -195,9 +195,9 @@ def get_top_snps(df, diseases, omics_list = None, HLA = False, create_chart = Fa
     else: # if using default ndd_omics list
         for disease in diseases:
             for omic in ndd_omics:
-                temp_df = smr_df.query(f"Disease == '{disease}' & Omic == '{omic}' & p_SMR_multi < {pval} & p_HEIDI > {heidi}")
+                temp_df = smr_df.query(f"Disease == '{disease}' & Omic == '{omic}' & p_SMR_multi < {pval} & p_HEIDI > {heidi} & p_eQTL > {peqtl}")
                 top_snp = temp_df[temp_df['p_SMR_multi'] == temp_df['p_SMR_multi'].min()]
-                top_snp = top_snp[['Omic', 'Disease', 'annotated_gene', 'topSNP', 'b_GWAS','p_GWAS', 'b_SMR', 'p_SMR_multi', 'p_HEIDI']]
+                top_snp = top_snp[['Omic', 'Disease', 'annotated_gene', 'topSNP', 'b_GWAS','p_GWAS', 'b_SMR', 'p_SMR_multi', 'p_HEIDI', 'p_eQTL']]
                 
                 top_snps_df = pd.concat([top_snps_df,top_snp])
 
@@ -247,6 +247,8 @@ def app():
         st.session_state['top_submit'] = 'not_run'
     if 'dx_list' not in st.session_state:
         st.session_state['dx_list'] = None
+    if 'peqtl' not in st.session_state:
+        st.session_state['peqtl'] = 0.05
     if 'pval' not in st.session_state:
         st.session_state['pval'] = 0.05
     if 'heidi' not in st.session_state:
@@ -326,10 +328,12 @@ def app():
                 
 
                 # parameter choice
-                pvalue = st.number_input('P-value threshold', value = 0.05)
+                pvalue = st.number_input('SMR P-value threshold', value = 0.05)
                 st.session_state['pval'] = pvalue
                 heidival = st.number_input('HEIDI p-value threshold', value = 0.01)
                 st.session_state['heidi'] = heidival
+                peqtlval = st.number_input('p-eQTL threshold', value = 0.05)
+                st.session_state['peqtl'] = peqtlval
 
                 submitted = st.form_submit_button("Submit parameters")
                 if submitted:
@@ -340,7 +344,9 @@ def app():
                     if gene_or_not == 'Genes' and all_or_some == 'All available omics':
                         st.write(f'Calculating results for Genes + All available omics')
                             
-                        top_genes_df, top_gene_chart = get_top_genes(main_df, st.session_state['dx_list'] , omics_list = 'all', HLA = True, create_chart = True,heidi = st.session_state['heidi'], pval = st.session_state['pval'])
+                        top_genes_df, top_gene_chart = get_top_genes(main_df, st.session_state['dx_list'],
+                        omics_list = 'all', HLA = True, create_chart = True,heidi = st.session_state['heidi'],
+                        pval = st.session_state['pval'], peqtl = st.session_state['peqtl'])
                         
                         st.session_state['top_df'] = top_genes_df
                         st.session_state['top_chart'] = top_gene_chart
@@ -348,7 +354,9 @@ def app():
                     elif gene_or_not == 'Genes' and all_or_some == 'NDD-related omics':
                         st.write('Calculating results for Genes + NDD-related omics')
                             
-                        top_genes_df, top_gene_chart = get_top_genes(main_df, st.session_state['dx_list'] , HLA = True, create_chart = True, heidi = st.session_state['heidi'], pval = st.session_state['pval'])
+                        top_genes_df, top_gene_chart = get_top_genes(main_df, st.session_state['dx_list'],
+                        HLA = True, create_chart = True, heidi = st.session_state['heidi'],
+                        pval = st.session_state['pval'], peqtl = st.session_state['peqtl'])
 
                         st.session_state['top_df'] = top_genes_df
                         st.session_state['top_chart'] = top_gene_chart
@@ -356,7 +364,9 @@ def app():
                     elif gene_or_not == 'Genes' and all_or_some == 'Custom':
                         st.write(f'Calculating results for Genes + {", ".join(st.session_state["omic_list"])}')
 
-                        top_genes_df, top_gene_chart =  get_top_genes(main_df, st.session_state['dx_list'] , omics_list = omics, HLA = True, create_chart = True, heidi = st.session_state['heidi'], pval = st.session_state['pval'])
+                        top_genes_df, top_gene_chart =  get_top_genes(main_df, st.session_state['dx_list'],
+                        omics_list = omics, HLA = True, create_chart = True, heidi = st.session_state['heidi'], 
+                        pval = st.session_state['pval'], peqtl = st.session_state['peqtl'])
 
                         st.session_state['top_df'] = top_genes_df
                         st.session_state['top_chart'] = top_gene_chart
@@ -364,7 +374,9 @@ def app():
                     elif gene_or_not == 'SNPs' and all_or_some == 'All available omics':
                         st.write('Calculating results for SNPs + All available omics')
                         
-                        top_snps_df, top_snps_chart = get_top_snps(main_df, st.session_state['dx_list'] , omics_list = 'all', HLA = True, create_chart = True, heidi = st.session_state['heidi'], pval = st.session_state['pval'])
+                        top_snps_df, top_snps_chart = get_top_snps(main_df, st.session_state['dx_list'],
+                         omics_list = 'all', HLA = True, create_chart = True, heidi = st.session_state['heidi'],
+                          pval = st.session_state['pval'], peqtl = st.session_state['peqtl'])
 
                         
                         st.session_state['top_df'] = top_snps_df
@@ -374,7 +386,9 @@ def app():
                     elif gene_or_not == 'SNPs' and all_or_some == 'NDD-related omics':
                         st.write('Calculating results for SNPs + NDD-related omics')
                         
-                        top_snps_df, top_snps_chart = get_top_snps(main_df, st.session_state['dx_list'] , HLA = True, create_chart = True, heidi = st.session_state['heidi'], pval = st.session_state['pval'])
+                        top_snps_df, top_snps_chart = get_top_snps(main_df, st.session_state['dx_list'], 
+                        HLA = True, create_chart = True, heidi = st.session_state['heidi'], 
+                        pval = st.session_state['pval'], peqtl = st.session_state['peqtl'])
 
                         st.session_state['top_df'] = top_snps_df
                         st.session_state['top_chart'] = top_snps_chart
@@ -382,7 +396,9 @@ def app():
                     elif gene_or_not == 'SNPs' and all_or_some == 'Custom':
                         st.write(f'Calculating results for SNPs + {", ".join(st.session_state["omic_list"])}')
                         
-                        top_snps_df, top_snps_chart = get_top_snps(main_df, st.session_state['dx_list'] , omics_list = omics, HLA = True, create_chart = True, heidi = st.session_state['heidi'], pval = st.session_state['pval'])
+                        top_snps_df, top_snps_chart = get_top_snps(main_df, st.session_state['dx_list'], 
+                        omics_list = omics, HLA = True, create_chart = True, heidi = st.session_state['heidi'], 
+                        pval = st.session_state['pval'], peqtl = st.session_state['peqtl'])
 
                         st.session_state['top_df'] = top_snps_df
                         st.session_state['top_chart'] = top_snps_chart

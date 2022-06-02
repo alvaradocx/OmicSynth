@@ -88,6 +88,8 @@ def app():
         st.session_state['pval'] = 0.05
     if 'heidi' not in st.session_state:
         st.session_state['heidi'] = 0.01
+    if 'peqtl' not in st.session_state:
+        st.session_state['peqtl'] = 0.05
     if 'genes' not in st.session_state:
         st.session_state['genes'] = ''
     if 'z_status' not in st.session_state:
@@ -129,6 +131,9 @@ def app():
         heidival = st.number_input('HEIDI p-value threshold', value = 0.01)
         st.session_state['heidi'] = heidival
 
+        peqtlval = st.number_input('p-eQTL threshold', value = 0.05)
+        st.session_state['peqtl'] = peqtlval
+
 
         # return count df
         count_omic = st.radio('Would you like to return a dataframe that shows how many times a gene shows up in each omic?', ('Yes', 'No'))
@@ -158,7 +163,7 @@ def app():
             gene_results_df = main_df[main_df['annotated_gene'].isin(st.session_state['genes'])]
             p_val = st.session_state['pval']
             heidi_val = st.session_state['heidi']
-            gene_results_df = gene_results_df.query(f'p_SMR_multi < {p_val} & p_HEIDI > {heidi_val}')
+            gene_results_df = gene_results_df.query(f'p_SMR_multi < {p_val} & p_HEIDI > {heidi_val} & p_eQTL > {peqtl}')
             st.session_state['gene_results_df'] = gene_results_df
             st.subheader('Results dataframe')
             st.dataframe(st.session_state['gene_results_df'])

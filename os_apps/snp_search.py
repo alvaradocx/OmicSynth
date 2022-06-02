@@ -87,6 +87,8 @@ def app():
         st.session_state['pval'] = 0.05
     if 'heidi' not in st.session_state:
         st.session_state['heidi'] = 0.01
+    if 'peqtl' not in st.session_state:
+        st.session_state['peqtl'] = 0.05
     if 'snps' not in st.session_state:
         st.session_state['snps'] = ''
     if 'z_status' not in st.session_state:
@@ -156,7 +158,7 @@ def app():
             snp_results_df = main_df[main_df['topSNP'].isin(st.session_state['snps'])]
             p_val = st.session_state['pval']
             heidi_val = st.session_state['heidi']
-            snp_results_df = snp_results_df.query(f'p_SMR_multi < {p_val} & p_HEIDI > {heidi_val}')
+            snp_results_df = snp_results_df.query(f'p_SMR_multi < {p_val} & p_HEIDI > {heidi_val} & p_eQTL > {peqtl}')
             st.session_state['snp_results_df'] = snp_results_df
             st.subheader('Results dataframe')
             st.dataframe(st.session_state['snp_results_df'])

@@ -161,7 +161,8 @@ def app():
             snp_results_df = main_df[main_df['topSNP'].isin(st.session_state['snps'])]
             p_val = st.session_state['pval']
             heidi_val = st.session_state['heidi']
-            snp_results_df = snp_results_df.query(f'p_SMR_multi < {p_val} & p_HEIDI > {heidi_val} & p_eQTL > {peqtl}')
+            peqtl_val = st.session_state['peqtl']
+            snp_results_df = snp_results_df.query(f'p_SMR_multi < {p_val} & p_HEIDI > {heidi_val} & p_eQTL < {peqtl_val}')
             st.session_state['snp_results_df'] = snp_results_df
             st.subheader('Results dataframe')
             st.dataframe(st.session_state['snp_results_df'])

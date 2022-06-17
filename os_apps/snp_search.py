@@ -42,7 +42,7 @@ def pull_snp_count(input_df, p_smr_multi = None, p_HEIDI = None, count = False, 
     # filter for genes
     final_df = pd.DataFrame()
     for snps in snps:
-        df = filter_df.query(f"topSNP == '{snp}'")
+        df = filter_df.query(f"topSNP == '{snps}'")
         final_df = pd.concat([final_df,df])
     
     final_df.sort_values('p_HEIDI', ascending = False, inplace = True)
@@ -62,7 +62,7 @@ def app():
     # Inject CSS with Markdown
     #st.markdown(hide_dataframe_row_index, unsafe_allow_html=True)
 
-    # session state variables for  gene dataframe
+     # session state variables for  gene dataframe
     if 'snps_list' not in st.session_state: # genes in dataase
         st.session_state['snps_list'] = None
     if 'snp_results_df' not in st.session_state:
@@ -93,14 +93,6 @@ def app():
         st.session_state['snps'] = ''
     if 'z_status' not in st.session_state:
         st.session_state['z_status'] = 'not_run'
-    
-
-
-    # session state variables for z-score copmutation
-    
-    # if 'z_df' not in st.session_state:
-    #     st.session_state['mtc_df'] = None
-    
 
     main_df = st.session_state['main_data']
     main_snp_list = list(main_df['topSNP'].unique())
@@ -113,7 +105,7 @@ def app():
         st.subheader('Parameter Selection')
 
         # user input - snps list
-        snps_list = st.text_area('Input a SNP or list of SNPs (seperated by comma):')
+        snps_list = st.text_area('Input a SNP or list of SNPs(dbSNP) (seperated by comma):')
         # split list
         snps_list = snps_list.split(',')
         new_snps = []
@@ -132,8 +124,7 @@ def app():
         peqtlval = st.number_input('p-eQTL threshold', value = 0.05)
         st.session_state['peqtl'] = peqtlval
 
-
-        # return count df
+       # return count df
         count_omic = st.radio('Would you like to return a dataframe that shows how many times a SNP shows up in each omic?', ('Yes', 'No'))
         st.session_state['omic_count'] = count_omic
         count_dx = st.radio('Would you like to return a dataframe that shows how many times a SNP shows up in each disease?', ('Yes', 'No'))
@@ -169,37 +160,37 @@ def app():
 
             st.download_button(label="Download results as CSV", data=convert_df(st.session_state['snp_results_df']), mime='text/csv')
 
-        if st.session_state['omic_count'] == 'Yes' and st.session_state['dx_count'] == 'Yes':
-            # omic count
-            omic_count_df = pd.crosstab(st.session_state['snp_results_df'].Omic, st.session_state['snp_results_df'].topSNP)
-            st.session_state['omic_df'] = omic_count_df
-            st.subheader('Omic count')
-            st.dataframe(st.session_state['omic_df'])
-            
-            st.download_button(label="Download omic count results as CSV", data=convert_df(st.session_state['omic_df']), mime='text/csv')
+            if st.session_state['omic_count'] == 'Yes' and st.session_state['dx_count'] == 'Yes':
+                # omic count
+                omic_count_df = pd.crosstab(st.session_state['snp_results_df'].Omic, st.session_state['snp_results_df'].topSNP)
+                st.session_state['omic_df'] = omic_count_df
+                st.subheader('Omic count')
+                st.dataframe(st.session_state['omic_df'])
+                
+                st.download_button(label="Download omic count results as CSV", data=convert_df(st.session_state['omic_df']), mime='text/csv')
 
-            # disease count
-            dx_count_df = pd.crosstab(st.session_state['snp_results_df'].Disease, st.session_state['snp_results_df'].topSNP)
-            st.session_state['dx_df'] = dx_count_df
-            st.subheader('Disease count')
-            st.dataframe(st.session_state['dx_df'])
+                # disease count
+                dx_count_df = pd.crosstab(st.session_state['snp_results_df'].Disease, st.session_state['snp_results_df'].topSNP)
+                st.session_state['dx_df'] = dx_count_df
+                st.subheader('Disease count')
+                st.dataframe(st.session_state['dx_df'])
 
-            st.download_button(label="Download disease count results as CSV", data=convert_df(st.session_state['dx_df']), mime='text/csv')
+                st.download_button(label="Download disease count results as CSV", data=convert_df(st.session_state['dx_df']), mime='text/csv')
 
-        elif st.session_state['omic_count'] == 'Yes' and st.session_state['dx_count'] == 'No':
-            # omic count
-            omic_count_df = pd.crosstab(st.session_state['snp_results_df'].Omic, st.session_state['snp_results_df'].topSNP)
-            st.session_state['omic_df'] = omic_count_df
-            st.subheader('Omic count')
-            st.dataframe(st.session_state['omic_df'])
+            elif st.session_state['omic_count'] == 'Yes' and st.session_state['dx_count'] == 'No':
+                # omic count
+                omic_count_df = pd.crosstab(st.session_state['snp_results_df'].Omic, st.session_state['snp_results_df'].topSNP)
+                st.session_state['omic_df'] = omic_count_df
+                st.subheader('Omic count')
+                st.dataframe(st.session_state['omic_df'])
 
-            st.download_button(label="Download omic count results as CSV", data=convert_df(st.session_state['omic_df']), mime='text/csv')
+                st.download_button(label="Download omic count results as CSV", data=convert_df(st.session_state['omic_df']), mime='text/csv')
 
-        elif st.session_state['omic_count'] == 'No' and st.session_state['dx_count'] == 'Yes':
-            # disease count
-            dx_count_df = pd.crosstab(st.session_state['snp_results_df'].Disease, st.session_state['snp_results_df'].topSNP)
-            st.session_state['dx_df'] = dx_count_df
-            st.subheader('Disease count')
-            st.dataframe(st.session_state['dx_df'])
+            elif st.session_state['omic_count'] == 'No' and st.session_state['dx_count'] == 'Yes':
+                # disease count
+                dx_count_df = pd.crosstab(st.session_state['snp_results_df'].Disease, st.session_state['snp_results_df'].topSNP)
+                st.session_state['dx_df'] = dx_count_df
+                st.subheader('Disease count')
+                st.dataframe(st.session_state['dx_df'])
 
-            st.download_button(label="Download disease count results as CSV", data=convert_df(st.session_state['dx_df']), mime='text/csv')
+                st.download_button(label="Download disease count results as CSV", data=convert_df(st.session_state['dx_df']), mime='text/csv')

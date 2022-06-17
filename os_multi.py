@@ -1,7 +1,6 @@
 import streamlit as st
-import pandas as pd
 from multiapp import MultiApp
-from os_apps import gene_search, home, data, analysis, top_genes, snp_search# import your app modules here
+from os_apps import gene_search, home, data, analysis, top_genes, snp_search, drug_search, data_sources, network # import your app modules here
 
 
 app = MultiApp()
@@ -18,6 +17,9 @@ app.add_app("Analysis", analysis.app)
 app.add_app("Top Genes & SNPs", top_genes.app)
 app.add_app("Gene Search", gene_search.app)
 app.add_app("SNP Search", snp_search.app)
+app.add_app("Drug Target Search", drug_search.app)
+app.add_app("Data Sources and Information", data_sources.app)
+app.add_app("Gene Network", network.app)
 
 # The main app
-app.run()   
+app.run()

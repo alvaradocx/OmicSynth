@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import os_apps.main_df as main
 
 
 def convert_df(df):
@@ -94,13 +93,6 @@ def app():
         st.session_state['genes'] = ''
     if 'z_status' not in st.session_state:
         st.session_state['z_status'] = 'not_run'
-    
-
-
-    # session state variables for z-score copmutation
-    
-    # if 'z_df' not in st.session_state:
-    #     st.session_state['mtc_df'] = None
     
 
     main_df = st.session_state['main_data']

@@ -12,6 +12,13 @@ def create_main():
     # modifications
     df = df.rename({'Gene_rename':'annotated_gene'}, axis = 1) # rename columns as desired
     df = df.drop(columns = ['gene_clean'])
+    df['p_SMR'] = df['p_SMR'].map('{:.6f}'.format)
+    df['b_GWAS'] = df['b_GWAS'].map('{:.6f}'.format)
+    df['se_GWAS'] = df['se_GWAS'].map('{:.6f}'.format)
+    df['p_GWAS'] = df['p_GWAS'].map('{:.6f}'.format)
+    df['p_eQTL'] = df['p_eQTL'].map('{:.6f}'.format)
+    df['p_SMR_multi'] =  df['p_SMR_multi'].map('{:.6f}'.format)
+    df['p_HEIDI'] =  df['p_HEIDI'].map('{:.6f}'.format)
 
     return df
 

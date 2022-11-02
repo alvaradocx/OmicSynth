@@ -1,12 +1,7 @@
-<<<<<<< HEAD
+
 pip
 pandas
 scipy
 streamlit
+streamlit_aggrid
 
-=======
-pandas==1.4.4
-scipy==1.7.3
-streamlit==1.14.0
-streamlit-aggrid==0.3.3
->>>>>>> e6e572e9b867d3083514729496b2036301d4e8d7

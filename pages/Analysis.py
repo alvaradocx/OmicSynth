@@ -121,7 +121,7 @@ with st.form("Filter_Results"):
     ndd_omics = ['Brain_Amygdala', 'Brain_Hippocampus', 'Brain_Anterior_cingulate_cortex_BA24', 'Brain_Nucleus_accumbens_basal_ganglia', 'Brain_Hypothalamus',
     'Brain_Cerebellar_Hemisphere', 'Brain_Substantia_nigra', 'Brain_Caudate_basal_ganglia', 'Brain_Putamen_basal_ganglia', 'Brain_Cerebellum',  'Brain_Spinal_cord_cervical_c-1',
     'Brain_Cortex', 'Brain_Frontal_Cortex_BA9', 'Liver', 'Nerve_Tibial', 'Whole_Blood', 'Muscle_Skeletal', 'Cerebellum_metaBrain', 'Spinalcord_metaBrain', 'brain_eMeta', 'Cortex_metaBrain',
-    'Basalganglia_metaBrain',  'Hippocampus_metaBrain', 'blood_eQTLgen', 'brain_mMeta', 'blood_Bryois', 'blood_mcrae']
+    'Basalganglia_metaBrain',  'Hippocampus_metaBrain', 'blood_eQTLgen', 'brain_mMeta', 'blood_Bryois', 'blood_mcrae', 'psychEncode_prefrontal_cortex']
     unique_omic = list(main_df['Omic'].unique())
     unique_omic.insert(0,'All')
     unique_omic.insert(1,'NDD-related omics')
@@ -157,9 +157,9 @@ with st.container():
     col1, col2= st.columns(2)
 
     with col1:
-        with st.form('MTC'): # form to run holm adjustment
+        with st.form('MTC'): # form to run FDR adjustment
             st.subheader("Multiple Test Correction")
-            st.write('Perform FDR on your filtered dataframe and add an "adjusted_pval" column')
+            st.write('Perform FDR test correction and add an "adjusted_pval" column. Correction will be calculated on the results from your **filtered dataframe**')
             
             mtc_run = st.form_submit_button("Run correction!")
             

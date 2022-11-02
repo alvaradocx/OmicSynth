@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from scipy.stats import rankdata
 
 def convert_df(df):
      # IMPORTANT: Cache the conversion to prevent computation on every rerun
@@ -49,7 +50,7 @@ def get_top_genes(df, diseases, omics_list = None, HLA = False, create_chart = F
     ndd_omics = ['Brain_Amygdala', 'Brain_Hippocampus', 'Brain_Anterior_cingulate_cortex_BA24', 'Brain_Nucleus_accumbens_basal_ganglia', 'Brain_Hypothalamus',
     'Brain_Cerebellar_Hemisphere', 'Brain_Substantia_nigra', 'Brain_Caudate_basal_ganglia', 'Brain_Putamen_basal_ganglia', 'Brain_Cerebellum',  'Brain_Spinal_cord_cervical_c-1',
     'Brain_Cortex', 'Brain_Frontal_Cortex_BA9', 'Liver', 'Nerve_Tibial', 'Whole_Blood', 'Muscle_Skeletal', 'Cerebellum_metaBrain', 'Spinalcord_metaBrain', 'brain_eMeta', 'Cortex_metaBrain',
-    'Basalganglia_metaBrain',  'Hippocampus_metaBrain', 'blood_eQTLgen', 'brain_mMeta', 'blood_Bryois', 'blood_mcrae']
+    'Basalganglia_metaBrain',  'Hippocampus_metaBrain', 'blood_eQTLgen', 'brain_mMeta', 'blood_Bryois', 'blood_mcrae', 'psychEncode_prefrontal_cortex']
     all_omics = list(df['Omic'].unique())
 
     if HLA:
@@ -146,7 +147,7 @@ def get_top_snps(df, diseases, omics_list = None, HLA = False, create_chart = Fa
     ndd_omics = ['Brain_Amygdala', 'Brain_Hippocampus', 'Brain_Anterior_cingulate_cortex_BA24', 'Brain_Nucleus_accumbens_basal_ganglia', 'Brain_Hypothalamus',
     'Brain_Cerebellar_Hemisphere', 'Brain_Substantia_nigra', 'Brain_Caudate_basal_ganglia', 'Brain_Putamen_basal_ganglia', 'Brain_Cerebellum',  'Brain_Spinal_cord_cervical_c-1',
     'Brain_Cortex', 'Brain_Frontal_Cortex_BA9', 'Liver', 'Nerve_Tibial', 'Whole_Blood', 'Muscle_Skeletal', 'Cerebellum_metaBrain', 'Spinalcord_metaBrain', 'brain_eMeta', 'Cortex_metaBrain',
-    'Basalganglia_metaBrain',  'Hippocampus_metaBrain', 'blood_eQTLgen', 'brain_mMeta', 'blood_Bryois', 'blood_mcrae']
+    'Basalganglia_metaBrain',  'Hippocampus_metaBrain', 'blood_eQTLgen', 'brain_mMeta', 'blood_Bryois', 'blood_mcrae', 'psychEncode_prefrontal_cortex']
     all_omics = list(df['Omic'].unique())
 
     # remove all genes with HLA in name if user choses
@@ -305,7 +306,7 @@ st.write('This interactive tool will allow you to extract the top genes and/or S
 
 with st.form('query selection'):
     gene_or_not = st.radio("Extract top genes or top SNPs?", ('Genes', 'SNPs'))
-    all_or_some = st.radio("Select which subset of omics to use", ('All available omics', 'NDD-related omics', 'Custom'), help = 'NDD-related omics consist of omics related to brain areas,blood,and nerves.')
+    all_or_some = st.radio("Select which subset of omics to use", ('All available omics', 'NDD-related omics', 'Custom'), help = 'NDD-related omics consist of omics related to brain areas, blood, and nerves.')
     remove_HLA = st.radio("Filter out all HLA genes?", ('Remove HLA genes (default)', 'Keep HLA genes'))
 
     if remove_HLA == 'Remove HLA genes (default)':
@@ -457,8 +458,8 @@ with st.container():
 
     with col1:
         with st.form('druggable'): # form to compare users df to druggable genes list
-            st.subheader("Druggable gene identification")
-            st.write('Identify genes in your top genes chart that are known drug targets')
+            st.subheader("Therapeutic gene target identification")
+            st.write('Identify genes in your top genes chart that are known therapeutic gene targets')
             
             drug_run = st.form_submit_button("Run!")
             
@@ -478,9 +479,9 @@ with st.container():
 
             # list of druggable genes
             gene_list = list(st.session_state['gene_drugdf']['gene'].unique())
-            st.write(f'The druggable genes in your data are: {", ".join(gene_list)}')
+            st.write(f'The therapeutic gene targets in your data are: {", ".join(gene_list)}')
 
-            drug_filename = st.text_input('Please provide an output file name for the druggable gene results', placeholder = 'example.csv')
+            drug_filename = st.text_input('Please provide an output file name for the therapeutic gene target results', placeholder = 'example.csv')
             st.session_state['drug_name'] = drug_filename
             
             if st.session_state['drug_name']:

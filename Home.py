@@ -11,6 +11,7 @@ def create_main():
 
     # modifications
     df = df.rename({'Gene_rename':'annotated_gene'}, axis = 1) # rename columns as desired
+    df = df.drop(columns = ['gene_clean'])
 
     return df
 

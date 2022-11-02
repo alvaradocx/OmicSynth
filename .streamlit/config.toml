@@ -169,10 +169,10 @@ base = 'dark'
 # primaryColor =
 
 # Background color for the main content area.
- backgroundColor = 'gray'
+ #backgroundColor = 'gray'
 
 # Background color used for the sidebar and most interactive widgets.
- secondaryBackgroundColor = 'white'
+ #secondaryBackgroundColor = 'white'
 
 # Color used for almost all text.
 # textColor =
